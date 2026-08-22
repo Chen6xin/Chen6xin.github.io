@@ -43,10 +43,6 @@ layout: default
     </noscript>
 </div>
 
-## News
-
-- **2026-08** — Launched this personal homepage.
-- **TODO** — Add recent updates, awards, papers, talks, internships, or project releases.
 
 ## Misc.
 
