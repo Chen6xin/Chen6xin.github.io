@@ -5,11 +5,12 @@ layout: default
 <div class="hero-card">
   <p class="hero-kicker">Personal Homepage</p>
   <h2>Hi, I'm Xin Chen（陈鑫）.</h2>
-  <p>Welcome to my personal homepage. I use this site to collect my profile, projects, writing, and useful links.</p>
-  <p class="hero-note">Replace the TODO items below with your real bio, affiliation, interests, and project links.</p>
+  <p>I am a second-year master's student in Computer Science and Technology at Anhui Normal University. My research focuses on complex networks, higher-order networks, information spreading, and epidemic spreading.</p>
 </div>
 
 ## About Me
+
+<p class="bio-lead">I am interested in understanding how information, awareness, and disease spread across complex social systems. My current work explores epidemic dynamics under competing awareness mechanisms and media intervention, with an emphasis on network-based modeling and theoretical analysis.</p>
 
 - **Name:** Xin Chen（陈鑫）
 - **Affiliation:** School of Computer and Information, Anhui Normal University
@@ -20,24 +21,18 @@ layout: default
 
 <div class="focus-grid">
   <div class="focus-card">
-    <h3>Research / Study</h3>
-    <p>TODO: Add your research interests, coursework, thesis direction, or learning goals.</p>
+    <h3>Complex Networks</h3>
+    <p>Modeling spreading processes and collective dynamics on structured networked systems.</p>
   </div>
   <div class="focus-card">
-    <h3>Projects</h3>
-    <p>TODO: Add links to selected GitHub repositories, demos, apps, or engineering work.</p>
+    <h3>Higher-order Networks</h3>
+    <p>Exploring how group interactions reshape information diffusion and epidemic transmission.</p>
   </div>
   <div class="focus-card">
-    <h3>Writing</h3>
-    <p>TODO: Add notes, blog posts, tutorials, or publication updates.</p>
+    <h3>Awareness & Epidemics</h3>
+    <p>Studying coupled awareness–disease dynamics under media intervention and behavioral response.</p>
   </div>
 </div>
-
-## Selected Projects
-
-- **TODO: Project title** — one-sentence description. [Code](https://github.com/Chen6xin) / Demo
-- **TODO: Project title** — one-sentence description. [Code](https://github.com/Chen6xin) / Demo
-- **TODO: Project title** — one-sentence description. [Code](https://github.com/Chen6xin) / Demo
 
 ## Publications & Writing
 
