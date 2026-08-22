@@ -27,6 +27,6 @@ Tips:
 ## Paradoxical epidemic dynamics induced by dual-awareness competition under asymmetric media intervention
 - Authors: Jie Chen, **Xin Chen**, Xingli Jing, Xin Hong
 - Venue: Chaos
-- Info: 36 (8) | 中科院二区 | DOI: 10.1063/5.0344013 | 2026-08
+- Info: 36 (8) | 中科院二区 | IF: 3.3 | 2026-08
 - Year: 2026
 - URL: https://doi.org/10.1063/5.0344013

@@ -17,22 +17,6 @@ layout: default
 - **Location:** Wuhu 241003, People’s Republic of China
 - **Interests:** complex networks, higher-order networks, information spreading, epidemic spreading
 
-## Current Focus
-
-<div class="focus-grid">
-  <div class="focus-card">
-    <h3>Complex Networks</h3>
-    <p>Modeling spreading processes and collective dynamics on structured networked systems.</p>
-  </div>
-  <div class="focus-card">
-    <h3>Higher-order Networks</h3>
-    <p>Exploring how group interactions reshape information diffusion and epidemic transmission.</p>
-  </div>
-  <div class="focus-card">
-    <h3>Awareness & Epidemics</h3>
-    <p>Studying coupled awareness–disease dynamics under media intervention and behavioral response.</p>
-  </div>
-</div>
 
 ## Publications & Writing
 
