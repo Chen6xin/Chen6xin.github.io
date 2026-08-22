@@ -2,15 +2,9 @@
 layout: default
 ---
 
-<div class="hero-card">
-  <p class="hero-kicker">Personal Homepage</p>
-  <h2>Hi, I'm Xin Chen（陈鑫）.</h2>
-  <p>I am a second-year master's student in Computer Science and Technology at Anhui Normal University. My research focuses on complex networks, higher-order networks, information spreading, and epidemic spreading.</p>
-</div>
+## Personal Profile
 
-## About Me
-
-<p class="bio-lead">I am interested in understanding how information, awareness, and disease spread across complex social systems. My current work explores epidemic dynamics under competing awareness mechanisms and media intervention, with an emphasis on network-based modeling and theoretical analysis.</p>
+<p class="bio-lead">Hi! I’m Xin Chen and my name in Chinese is 陈鑫. I’m currently a second-year master’s student in Computer Science and Technology at Anhui Normal University. My research focuses on complex networks, higher-order networks, information spreading, and epidemic spreading.</p>
 
 - **Name:** Xin Chen（陈鑫）
 - **Affiliation:** School of Computer and Information, Anhui Normal University
