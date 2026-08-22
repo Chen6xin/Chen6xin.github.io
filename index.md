@@ -4,14 +4,19 @@ layout: default
 
 <div class="hero-card">
   <p class="hero-kicker">Personal Homepage</p>
-  <h2>Hi, I'm Chen6xin.</h2>
+  <h2>Hi, I'm Xin Chen <span class="name-native">（陈鑫）</span>.</h2>
   <p>Welcome to my personal homepage. I use this site to collect my profile, projects, writing, and useful links.</p>
+  <div class="hero-tags">
+    <span>Profile</span>
+    <span>Projects</span>
+    <span>Writing</span>
+  </div>
   <p class="hero-note">Replace the TODO items below with your real bio, affiliation, interests, and project links.</p>
 </div>
 
 ## About Me
 
-- **Name:** TODO: Your full name
+- **Name:** Xin Chen（陈鑫）
 - **Affiliation:** TODO: Your university, lab, company, or independent profile
 - **Location:** TODO: City / Country
 - **Interests:** TODO: e.g., artificial intelligence, software engineering, data science, open-source tools
@@ -55,4 +60,4 @@ layout: default
 
 ## Misc.
 
-<img src="https://ghchart.rshah.org/Chen6xin" alt="Chen6xin's GitHub contribution chart" />
+<img src="https://ghchart.rshah.org/Chen6xin" alt="Xin Chen's GitHub contribution chart" />

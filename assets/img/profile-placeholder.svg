@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="avatarTitle avatarDesc">
-  <title id="avatarTitle">Chen6xin profile placeholder</title>
-  <desc id="avatarDesc">A blue gradient placeholder avatar with the initials CX.</desc>
+  <title id="avatarTitle">Xin Chen profile placeholder</title>
+  <desc id="avatarDesc">A blue gradient placeholder avatar with the initials XC.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#267CB9"/>
@@ -15,5 +15,5 @@
   <rect width="400" height="400" rx="44" fill="url(#glow)"/>
   <circle cx="200" cy="155" r="70" fill="#ffffff" opacity="0.92"/>
   <path fill="#ffffff" opacity="0.92" d="M82 334c19-70 64-105 118-105s99 35 118 105H82Z"/>
-  <text x="200" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700" fill="#1A5A87">CX</text>
+  <text x="200" y="220" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700" fill="#1A5A87">XC</text>
 </svg>
