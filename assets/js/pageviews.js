@@ -6,7 +6,6 @@
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
   var LOCAL_VISIT_KEY = "pageviews-local-boost-v1";
-  var LEVEL_THRESHOLDS = [5, 10, 15, 20];
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   function pad(n) {
@@ -47,10 +46,10 @@
 
   function levelFor(count) {
     count = parseInt(count, 10) || 0;
-    if (count < LEVEL_THRESHOLDS[0]) return 0;
-    if (count < LEVEL_THRESHOLDS[1]) return 1;
-    if (count < LEVEL_THRESHOLDS[2]) return 2;
-    if (count < LEVEL_THRESHOLDS[3]) return 3;
+    if (count <= 0) return 0;
+    if (count <= 5) return 1;
+    if (count <= 9) return 2;
+    if (count <= 15) return 3;
     return 4;
   }
 
