@@ -41,7 +41,7 @@ layout: default
     </div>
   </div>
   <div class="visit-heatmap-footer">
-    <span class="visit-updated" id="pageviews-updated">Updated periodically from GoatCounter.</span>
+    <span class="visit-updated" id="pageviews-updated">Page view statistics are updated in real time by GoatCounter.</span>
     <div class="visit-heatmap-legend" aria-hidden="true">
       <span>Less</span>
       <span class="visit-day visit-level-1" title="1–5 views"></span>

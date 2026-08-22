@@ -173,7 +173,7 @@
     });
 
     if (updatedNode && data && data.updated_at) {
-      updatedNode.textContent = "Updated " + data.updated_at.replace("T", " ").replace(/Z$/, " UTC") + "; current refreshes show immediately.";
+      updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
     }
     wrapper.classList.add("is-loaded");
   }
@@ -202,7 +202,7 @@
       })
       .catch(function (err) {
         var updatedNode = document.getElementById("pageviews-updated");
-        if (updatedNode) updatedNode.textContent = "Page view data will appear after the first GoatCounter update.";
+        if (updatedNode) updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
         if (window.console) console.warn("pageviews.js:", err);
       });
   }
