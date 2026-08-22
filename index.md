@@ -24,7 +24,7 @@ layout: default
 
 ## Page views <span class="pageviews-total">(total: <span id="pageviews-total">--</span>)</span>
 
-<div class="visit-heatmap" data-src="{{ '/assets/data/pageviews.json' | relative_url }}" aria-label="Daily page views heatmap">
+<div class="visit-heatmap" data-src="{{ '/assets/data/pageviews.json' | relative_url }}" data-counter-src="https://chen6xin.goatcounter.com/counter/TOTAL.json" aria-label="Daily page views heatmap">
   <div class="visit-heatmap-scroll">
     <div class="visit-months" id="visit-months" aria-hidden="true"></div>
     <div class="visit-body">

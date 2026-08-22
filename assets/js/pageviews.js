@@ -5,7 +5,7 @@
   var WEEKS = 54;
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
-  var LOCAL_VISIT_KEY = "pageviews-local-boost-v1";
+  var DEFAULT_COUNTER_SRC = "https://chen6xin.goatcounter.com/counter/TOTAL.json";
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   function pad(n) {
@@ -53,63 +53,6 @@
     return 4;
   }
 
-  function normalizeLocalVisitState(value) {
-    var state = value && typeof value === "object" ? value : {};
-    var days = {};
-    Object.keys(state.days || {}).forEach(function (key) {
-      var count = parseInt(state.days[key], 10) || 0;
-      if (count > 0) days[key] = count;
-    });
-    return {
-      updated_at: state.updated_at || "",
-      total: parseInt(state.total, 10) || 0,
-      days: days
-    };
-  }
-
-  function readLocalVisitState() {
-    try {
-      return normalizeLocalVisitState(JSON.parse(window.localStorage.getItem(LOCAL_VISIT_KEY) || "{}"));
-    } catch (err) {
-      return normalizeLocalVisitState({});
-    }
-  }
-
-  function writeLocalVisitState(state) {
-    try {
-      window.localStorage.setItem(LOCAL_VISIT_KEY, JSON.stringify(normalizeLocalVisitState(state)));
-    } catch (err) {
-      // Ignore private-mode or storage quota errors; the current page still renders.
-    }
-  }
-
-  function recordLocalVisit(todayKey) {
-    var state = readLocalVisitState();
-    state.total += 1;
-    state.days[todayKey] = (parseInt(state.days[todayKey], 10) || 0) + 1;
-    writeLocalVisitState(state);
-    return state;
-  }
-
-  function reconcileLocalVisit(updatedAt, todayKey, state) {
-    state = normalizeLocalVisitState(state);
-    if (!updatedAt) return state;
-
-    if (state.updated_at && state.updated_at !== updatedAt) {
-      state = { updated_at: updatedAt, total: 1, days: {} };
-      state.days[todayKey] = 1;
-    } else {
-      state.updated_at = updatedAt;
-    }
-
-    writeLocalVisitState(state);
-    return state;
-  }
-
-  function localBoostForDate(localVisit, key) {
-    return parseInt(localVisit && localVisit.days && localVisit.days[key], 10) || 0;
-  }
-
   function buildDateRange() {
     var today = startOfDay(new Date());
     var end = new Date(today.getTime() + (6 - today.getDay()) * DAY_MS); // Saturday of current week.
@@ -135,25 +78,20 @@
     }
   }
 
-  function render(data, localVisit) {
+  function render(data) {
     var wrapper = document.querySelector(".visit-heatmap");
     var grid = document.getElementById("visit-heatmap-grid");
     var months = document.getElementById("visit-months");
     var totalNode = document.getElementById("pageviews-total");
     var updatedNode = document.getElementById("pageviews-updated");
-    if (!wrapper || !grid || !totalNode) return;
+    if (!wrapper || !grid || !totalNode) return 0;
 
     var daily = normalizeDays(data && data.days);
-    var localTotal = parseInt(localVisit && localVisit.total, 10) || 0;
     var range = buildDateRange();
-    var counts = range.dates.map(function (d) {
-      var key = isoDate(d);
-      return (daily[key] || 0) + localBoostForDate(localVisit, key);
-    });
-    var baseTotal = data && data.total != null
+    var counts = range.dates.map(function (d) { return daily[isoDate(d)] || 0; });
+    var total = data && data.total != null
       ? parseInt(data.total, 10) || 0
       : range.dates.reduce(function (sum, d) { return sum + (daily[isoDate(d)] || 0); }, 0);
-    var total = baseTotal + localTotal;
 
     totalNode.textContent = formatNumber(total);
     renderMonths(months, range.today);
@@ -176,31 +114,55 @@
       updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
     }
     wrapper.classList.add("is-loaded");
+    return total;
   }
 
-  function renderEmpty(localVisit) {
-    render({ total: 0, days: [] }, localVisit);
+  function renderEmpty() {
+    return render({ total: 0, days: [] });
+  }
+
+  function parseCounterCount(payload) {
+    if (!payload || payload.count == null) return "";
+    return String(payload.count).trim();
+  }
+
+  function updateTotalFromCounter(totalNode, counterSrc) {
+    if (!totalNode || !counterSrc || typeof fetch !== "function") return;
+
+    fetch(counterSrc, { cache: "no-cache" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (payload) {
+        var count = parseCounterCount(payload);
+        if (count) totalNode.textContent = count;
+      })
+      .catch(function (err) {
+        if (window.console) console.warn("pageviews counter:", err);
+      });
   }
 
   function init() {
     var wrapper = document.querySelector(".visit-heatmap");
     if (!wrapper) return;
     var src = wrapper.getAttribute("data-src") || "/assets/data/pageviews.json";
+    var counterSrc = wrapper.getAttribute("data-counter-src") || DEFAULT_COUNTER_SRC;
     var sep = src.indexOf("?") === -1 ? "?" : "&";
-    var todayKey = isoDate(startOfDay(new Date()));
-    var localVisit = recordLocalVisit(todayKey);
+    var totalNode = document.getElementById("pageviews-total");
 
-    renderEmpty(localVisit);
+    renderEmpty();
     fetch(src + sep + "v=" + Date.now(), { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(function (data) {
-        localVisit = reconcileLocalVisit(data && data.updated_at, todayKey, localVisit);
-        render(data, localVisit);
+        render(data);
+        updateTotalFromCounter(totalNode, counterSrc);
       })
       .catch(function (err) {
+        updateTotalFromCounter(totalNode, counterSrc);
         var updatedNode = document.getElementById("pageviews-updated");
         if (updatedNode) updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
         if (window.console) console.warn("pageviews.js:", err);

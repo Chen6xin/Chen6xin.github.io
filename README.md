@@ -39,14 +39,15 @@ The paper title on the homepage becomes clickable when `URL` is provided.
 
 ## Page-view heatmap
 
-The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking. Daily historical data is stored in `assets/data/pageviews.json` and rendered as a contribution-graph-style heatmap. The browser adds a small local pending count on each refresh so the displayed total and today's cell update immediately before the next scheduled JSON refresh.
+The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking. Daily historical data is stored in `assets/data/pageviews.json` and rendered as a contribution-graph-style heatmap. The total counter is loaded from GoatCounter's public `counter/TOTAL.json` endpoint so different devices show the same value.
 
 To enable automatic updates:
 
 1. Open the GoatCounter dashboard at <https://chen6xin.goatcounter.com/>.
 2. Create an API token from the account API settings.
 3. In this GitHub repository, add a repository secret named `GOATCOUNTER_TOKEN` with that API token.
-4. Run the `Update page views` workflow manually once, or wait for the scheduled refresh.
+4. In GoatCounter site settings, enable “Allow adding visitor counts on your website” so the public counter endpoint can be read.
+5. Run the `Update page views` workflow manually once, or wait for the scheduled refresh.
 
 The public site never exposes the API token; GitHub Actions writes only the generated JSON data into the repository.
 
