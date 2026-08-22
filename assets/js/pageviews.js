@@ -1,7 +1,9 @@
 (function () {
   "use strict";
 
-  var WEEKS = 53;
+  var MONTH_BLOCKS = 13;
+  var WEEKS_PER_MONTH = 4;
+  var WEEKS = MONTH_BLOCKS * WEEKS_PER_MONTH;
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -63,21 +65,15 @@
     return { today: today, start: start, end: end, dates: dates };
   }
 
-  function renderMonths(container, dates) {
+  function renderMonths(container, today) {
     if (!container) return;
     container.innerHTML = "";
 
-    for (var week = 0; week < WEEKS; week++) {
-      var first = dates[week * DAYS_PER_WEEK];
-      var prev = week > 0 ? dates[(week - 1) * DAYS_PER_WEEK] : null;
-      var label = "";
-
-      if (first && (!prev || first.getMonth() !== prev.getMonth())) {
-        label = MONTHS[first.getMonth()];
-      }
-
+    var firstMonth = new Date(today.getFullYear(), today.getMonth() - (MONTH_BLOCKS - 1), 1);
+    for (var i = 0; i < MONTH_BLOCKS; i++) {
+      var d = new Date(firstMonth.getFullYear(), firstMonth.getMonth() + i, 1);
       var span = document.createElement("span");
-      span.textContent = label;
+      span.textContent = MONTHS[d.getMonth()];
       container.appendChild(span);
     }
   }
@@ -99,7 +95,7 @@
       : counts.reduce(function (s, n) { return s + n; }, 0);
 
     totalNode.textContent = formatNumber(total);
-    renderMonths(months, range.dates);
+    renderMonths(months, range.today);
     grid.innerHTML = "";
 
     range.dates.forEach(function (d, i) {
