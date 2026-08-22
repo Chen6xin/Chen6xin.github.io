@@ -4,13 +4,8 @@ layout: default
 
 <div class="hero-card">
   <p class="hero-kicker">Personal Homepage</p>
-  <h2>Hi, I'm Xin Chen <span class="name-native">（陈鑫）</span>.</h2>
+  <h2>Hi, I'm Xin Chen（陈鑫）.</h2>
   <p>Welcome to my personal homepage. I use this site to collect my profile, projects, writing, and useful links.</p>
-  <div class="hero-tags">
-    <span>Profile</span>
-    <span>Projects</span>
-    <span>Writing</span>
-  </div>
   <p class="hero-note">Replace the TODO items below with your real bio, affiliation, interests, and project links.</p>
 </div>
 
