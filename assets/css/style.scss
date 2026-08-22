@@ -265,14 +265,12 @@ header {
 }
 
 /* avatar halo (direct child of <header> only — NOT the .contact-icon imgs).
-   Portrait rectangle to preserve the personal-photo composition. */
+   Square (rounded to match the card radius) rather than a circle. */
 header > img {
-    width: 196px;
-    height: 274px;
-    max-width: 100%;
+    width: 184px;
+    height: 184px;
     object-fit: cover;
-    object-position: center top;
-    border-radius: 12px;
+    border-radius: var(--radius);
     padding: 4px;
     background: var(--surface);
     border: 1px solid var(--line);
@@ -749,8 +747,8 @@ section img[src*="ghchart"] {
     }
 
     header > img {
-        width: 156px;
-        height: 218px;
+        width: 150px;
+        height: 150px;
     }
 
     .focus-grid {
