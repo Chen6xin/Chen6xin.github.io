@@ -43,15 +43,12 @@ layout: default
   <div class="visit-heatmap-footer">
     <span class="visit-updated" id="pageviews-updated">Updated periodically from GoatCounter.</span>
     <div class="visit-heatmap-legend" aria-hidden="true">
-      <span>0</span>
+      <span>Less</span>
       <span class="visit-day visit-level-1" title="1–5 views"></span>
-      <span>1–5</span>
       <span class="visit-day visit-level-2" title="6–9 views"></span>
-      <span>6–9</span>
       <span class="visit-day visit-level-3" title="10–15 views"></span>
-      <span>10–15</span>
       <span class="visit-day visit-level-4" title="16+ views"></span>
-      <span>16+</span>
+      <span>More</span>
     </div>
   </div>
 </div>
