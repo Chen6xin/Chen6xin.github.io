@@ -37,9 +37,9 @@
         {% endif %}
       </footer>
     </div>
-    <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
-    <script src="{{ "/assets/js/publications.js" | relative_url }}"></script>
-    <script src="{{ "/assets/js/pageviews.js" | relative_url }}"></script>
+    <script src="{{ "/assets/js/scale.fix.js?v=" | append: site.github.build_revision | relative_url }}"></script>
+    <script src="{{ "/assets/js/publications.js?v=" | append: site.github.build_revision | relative_url }}"></script>
+    <script src="{{ "/assets/js/pageviews.js?v=" | append: site.github.build_revision | relative_url }}"></script>
     <script data-goatcounter="https://chen6xin.goatcounter.com/count" data-goatcounter-settings='{"no_session": true}' async src="https://gc.zgo.at/count.js"></script>
   </body>
 </html>

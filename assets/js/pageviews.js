@@ -6,6 +6,7 @@
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
   var DEFAULT_COUNTER_SRC = "https://chen6xin.goatcounter.com/counter/TOTAL.json";
+  var LEGACY_LOCAL_VISIT_KEY = "pageviews-local-boost-v1";
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   function pad(n) {
@@ -132,6 +133,14 @@
     return String(payload.count).trim();
   }
 
+  function clearLegacyLocalVisitState() {
+    try {
+      window.localStorage.removeItem(LEGACY_LOCAL_VISIT_KEY);
+    } catch (err) {
+      // Ignore private-mode or storage errors.
+    }
+  }
+
   function parseCount(value) {
     var count = parseInt(String(value == null ? "" : value).replace(/,/g, ""), 10);
     return isNaN(count) ? null : count;
@@ -199,12 +208,16 @@
         if (updatedNode) updatedNode.textContent = "Total updates in real time via Cloudflare Workers; analytics by GoatCounter.";
       })
       .catch(function (err) {
+        var updatedNode = document.getElementById("pageviews-updated");
+        totalNode.textContent = "--";
+        if (updatedNode) updatedNode.textContent = "Realtime total is temporarily unavailable; analytics are tracked by GoatCounter.";
         if (window.console) console.warn("pageviews realtime counter:", err);
-        return updateTotalFromCounter(totalNode, counterSrc);
       });
   }
 
   function init() {
+    clearLegacyLocalVisitState();
+
     var wrapper = document.querySelector(".visit-heatmap");
     if (!wrapper) return;
     var src = wrapper.getAttribute("data-src") || "/assets/data/pageviews.json";
