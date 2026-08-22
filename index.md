@@ -6,7 +6,7 @@ layout: default
 
 <p class="bio-lead">Hi! I’m Xin Chen and my name in Chinese is 陈鑫. I’m currently a second-year master’s student in Computer Science and Technology at <strong>Anhui Normal University</strong>. My research focuses on the co-evolution and spread of information and epidemics, and higher-order networks.</p>
 
-- **Name:** Xin Chen（陈鑫）
+- **Name:** Xin Chen
 - **Affiliation:** School of Computer and Information, Anhui Normal University
 - **Location:** Wuhu 241003, People’s Republic of China
 - **Interests:** complex networks, higher-order networks, information spreading, epidemic spreading
