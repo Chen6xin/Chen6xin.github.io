@@ -12,9 +12,9 @@ layout: default
 ## About Me
 
 - **Name:** Xin Chen（陈鑫）
-- **Affiliation:** TODO: Your university, lab, company, or independent profile
-- **Location:** TODO: City / Country
-- **Interests:** TODO: e.g., artificial intelligence, software engineering, data science, open-source tools
+- **Affiliation:** School of Computer and Information, Anhui Normal University
+- **Location:** Wuhu 241003, People’s Republic of China
+- **Interests:** complex networks, higher-order networks, information propagation, disease transmission
 
 ## Current Focus
 
