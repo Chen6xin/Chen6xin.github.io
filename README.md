@@ -39,7 +39,7 @@ The paper title on the homepage becomes clickable when `URL` is provided.
 
 ## Page-view heatmap
 
-The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking. Daily historical data is stored in `assets/data/pageviews.json` and rendered as a contribution-graph-style heatmap.
+The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking. Daily historical data is stored in `assets/data/pageviews.json` and rendered as a contribution-graph-style heatmap. The browser adds a small local pending count on each refresh so the displayed total and today's cell update immediately before the next scheduled JSON refresh.
 
 To enable automatic updates:
 

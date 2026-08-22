@@ -5,6 +5,8 @@
   var WEEKS = 54;
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
+  var LOCAL_VISIT_KEY = "pageviews-local-boost-v1";
+  var LEVEL_THRESHOLDS = [5, 10, 15, 20];
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   function pad(n) {
@@ -43,13 +45,70 @@
     return map;
   }
 
-  function levelFor(count, max) {
-    if (!count || count <= 0 || !max) return 0;
-    var ratio = count / max;
-    if (ratio <= 0.25) return 1;
-    if (ratio <= 0.5) return 2;
-    if (ratio <= 0.75) return 3;
+  function levelFor(count) {
+    count = parseInt(count, 10) || 0;
+    if (count < LEVEL_THRESHOLDS[0]) return 0;
+    if (count < LEVEL_THRESHOLDS[1]) return 1;
+    if (count < LEVEL_THRESHOLDS[2]) return 2;
+    if (count < LEVEL_THRESHOLDS[3]) return 3;
     return 4;
+  }
+
+  function normalizeLocalVisitState(value) {
+    var state = value && typeof value === "object" ? value : {};
+    var days = {};
+    Object.keys(state.days || {}).forEach(function (key) {
+      var count = parseInt(state.days[key], 10) || 0;
+      if (count > 0) days[key] = count;
+    });
+    return {
+      updated_at: state.updated_at || "",
+      total: parseInt(state.total, 10) || 0,
+      days: days
+    };
+  }
+
+  function readLocalVisitState() {
+    try {
+      return normalizeLocalVisitState(JSON.parse(window.localStorage.getItem(LOCAL_VISIT_KEY) || "{}"));
+    } catch (err) {
+      return normalizeLocalVisitState({});
+    }
+  }
+
+  function writeLocalVisitState(state) {
+    try {
+      window.localStorage.setItem(LOCAL_VISIT_KEY, JSON.stringify(normalizeLocalVisitState(state)));
+    } catch (err) {
+      // Ignore private-mode or storage quota errors; the current page still renders.
+    }
+  }
+
+  function recordLocalVisit(todayKey) {
+    var state = readLocalVisitState();
+    state.total += 1;
+    state.days[todayKey] = (parseInt(state.days[todayKey], 10) || 0) + 1;
+    writeLocalVisitState(state);
+    return state;
+  }
+
+  function reconcileLocalVisit(updatedAt, todayKey, state) {
+    state = normalizeLocalVisitState(state);
+    if (!updatedAt) return state;
+
+    if (state.updated_at && state.updated_at !== updatedAt) {
+      state = { updated_at: updatedAt, total: 1, days: {} };
+      state.days[todayKey] = 1;
+    } else {
+      state.updated_at = updatedAt;
+    }
+
+    writeLocalVisitState(state);
+    return state;
+  }
+
+  function localBoostForDate(localVisit, key) {
+    return parseInt(localVisit && localVisit.days && localVisit.days[key], 10) || 0;
   }
 
   function buildDateRange() {
@@ -77,7 +136,7 @@
     }
   }
 
-  function render(data) {
+  function render(data, localVisit) {
     var wrapper = document.querySelector(".visit-heatmap");
     var grid = document.getElementById("visit-heatmap-grid");
     var months = document.getElementById("visit-months");
@@ -86,12 +145,16 @@
     if (!wrapper || !grid || !totalNode) return;
 
     var daily = normalizeDays(data && data.days);
+    var localTotal = parseInt(localVisit && localVisit.total, 10) || 0;
     var range = buildDateRange();
-    var counts = range.dates.map(function (d) { return daily[isoDate(d)] || 0; });
-    var max = counts.reduce(function (m, n) { return Math.max(m, n); }, 0);
-    var total = data && data.total != null
+    var counts = range.dates.map(function (d) {
+      var key = isoDate(d);
+      return (daily[key] || 0) + localBoostForDate(localVisit, key);
+    });
+    var baseTotal = data && data.total != null
       ? parseInt(data.total, 10) || 0
-      : counts.reduce(function (s, n) { return s + n; }, 0);
+      : range.dates.reduce(function (sum, d) { return sum + (daily[isoDate(d)] || 0); }, 0);
+    var total = baseTotal + localTotal;
 
     totalNode.textContent = formatNumber(total);
     renderMonths(months, range.today);
@@ -102,7 +165,7 @@
       var count = counts[i];
       var cell = document.createElement("span");
       var future = d > range.today;
-      cell.className = "visit-day visit-level-" + (future ? 0 : levelFor(count, max));
+      cell.className = "visit-day visit-level-" + (future ? 0 : levelFor(count));
       if (future) cell.className += " is-future";
       cell.setAttribute("role", "img");
       cell.setAttribute("aria-label", future ? key + ": future date" : key + ": " + count + " page views");
@@ -111,13 +174,13 @@
     });
 
     if (updatedNode && data && data.updated_at) {
-      updatedNode.textContent = "Updated " + data.updated_at.replace("T", " ").replace(/Z$/, " UTC") + ".";
+      updatedNode.textContent = "Updated " + data.updated_at.replace("T", " ").replace(/Z$/, " UTC") + "; current refreshes show immediately.";
     }
     wrapper.classList.add("is-loaded");
   }
 
-  function renderEmpty() {
-    render({ total: 0, days: [] });
+  function renderEmpty(localVisit) {
+    render({ total: 0, days: [] }, localVisit);
   }
 
   function init() {
@@ -125,14 +188,19 @@
     if (!wrapper) return;
     var src = wrapper.getAttribute("data-src") || "/assets/data/pageviews.json";
     var sep = src.indexOf("?") === -1 ? "?" : "&";
+    var todayKey = isoDate(startOfDay(new Date()));
+    var localVisit = recordLocalVisit(todayKey);
 
-    renderEmpty();
+    renderEmpty(localVisit);
     fetch(src + sep + "v=" + Date.now(), { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
-      .then(render)
+      .then(function (data) {
+        localVisit = reconcileLocalVisit(data && data.updated_at, todayKey, localVisit);
+        render(data, localVisit);
+      })
       .catch(function (err) {
         var updatedNode = document.getElementById("pageviews-updated");
         if (updatedNode) updatedNode.textContent = "Page view data will appear after the first GoatCounter update.";
