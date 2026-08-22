@@ -1,0 +1,101 @@
+name: Update page views
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 16 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  update-pageviews:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Fetch GoatCounter daily page views
+        env:
+          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
+          GOATCOUNTER_SITE: https://chen6xin.goatcounter.com
+        run: |
+          python3 - <<'PY'
+          import datetime as dt
+          import json
+          import os
+          import pathlib
+          import urllib.parse
+          import urllib.request
+
+          token = os.environ.get("GOATCOUNTER_TOKEN", "").strip()
+          site = os.environ.get("GOATCOUNTER_SITE", "").rstrip("/")
+          if not token:
+              raise SystemExit("Missing GOATCOUNTER_TOKEN repository secret.")
+          if not site:
+              raise SystemExit("Missing GOATCOUNTER_SITE.")
+
+          today = dt.datetime.now(dt.timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+          end = today + dt.timedelta(days=1)
+          start_daily = end - dt.timedelta(days=371)
+          start_all = dt.datetime(2020, 1, 1, tzinfo=dt.timezone.utc)
+
+          def iso_hour(value):
+              return value.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          def request_stats(start, end):
+              params = urllib.parse.urlencode({
+                  "start": iso_hour(start),
+                  "end": iso_hour(end),
+                  "group": "day",
+              })
+              url = f"{site}/api/v0/stats/total?{params}"
+              req = urllib.request.Request(
+                  url,
+                  headers={
+                      "Authorization": f"Bearer {token}",
+                      "Content-Type": "application/json",
+                  },
+              )
+              with urllib.request.urlopen(req, timeout=60) as response:
+                  return json.loads(response.read().decode("utf-8"))
+
+          daily_payload = request_stats(start_daily, end)
+          total_payload = request_stats(start_all, end)
+
+          days = []
+          for item in daily_payload.get("stats", []):
+              day = str(item.get("day", ""))[:10]
+              if not day:
+                  continue
+              days.append({
+                  "date": day,
+                  "count": int(item.get("daily") or 0),
+              })
+
+          days.sort(key=lambda item: item["date"])
+          output = {
+              "updated_at": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+              "source": "GoatCounter",
+              "site": site,
+              "total": int(total_payload.get("total") or sum(item["count"] for item in days)),
+              "days": days,
+          }
+
+          path = pathlib.Path("assets/data/pageviews.json")
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(output, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+          print(f"Wrote {path} with {len(days)} daily records and total={output['total']}.")
+          PY
+
+      - name: Commit updated page view data
+        run: |
+          git add assets/data/pageviews.json
+          if git diff --cached --quiet; then
+            echo "No page view data changes."
+          else
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "Update page view data"
+            git push
+          fi
