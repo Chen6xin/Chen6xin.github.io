@@ -714,9 +714,8 @@ header hr {
 
 .visit-months {
     display: grid;
-    grid-template-columns: repeat(13, 45px); /* 4 week-columns per month */
-    column-gap: 3px;
-    min-width: 621px;
+    grid-template-columns: repeat(13, 1fr);
+    min-width: 645px;
     margin-left: 30px;
     margin-bottom: 0.35rem;
     color: var(--muted);
@@ -732,7 +731,7 @@ header hr {
     display: flex;
     align-items: flex-start;
     gap: 7px;
-    min-width: 651px;
+    min-width: 675px;
 }
 
 .visit-weekdays {

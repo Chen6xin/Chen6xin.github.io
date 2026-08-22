@@ -1,9 +1,8 @@
 (function () {
   "use strict";
 
-  var MONTH_BLOCKS = 13;
-  var WEEKS_PER_MONTH = 4;
-  var WEEKS = MONTH_BLOCKS * WEEKS_PER_MONTH;
+  var MONTH_LABELS = 13;
+  var WEEKS = 54;
   var DAYS_PER_WEEK = 7;
   var DAY_MS = 24 * 60 * 60 * 1000;
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -69,8 +68,8 @@
     if (!container) return;
     container.innerHTML = "";
 
-    var firstMonth = new Date(today.getFullYear(), today.getMonth() - (MONTH_BLOCKS - 1), 1);
-    for (var i = 0; i < MONTH_BLOCKS; i++) {
+    var firstMonth = new Date(today.getFullYear(), today.getMonth() - (MONTH_LABELS - 1), 1);
+    for (var i = 0; i < MONTH_LABELS; i++) {
       var d = new Date(firstMonth.getFullYear(), firstMonth.getMonth() + i, 1);
       var span = document.createElement("span");
       span.textContent = MONTHS[d.getMonth()];
