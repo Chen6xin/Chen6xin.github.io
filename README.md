@@ -46,7 +46,7 @@ To enable automatic updates:
 1. Open the GoatCounter dashboard at <https://chen6xin.goatcounter.com/>.
 2. Create an API token from the account API settings.
 3. In this GitHub repository, add a repository secret named `GOATCOUNTER_TOKEN` with that API token.
-4. Run the `Update page views` workflow manually once, or wait for the scheduled daily run.
+4. Run the `Update page views` workflow manually once, or wait for the scheduled refresh.
 
 The public site never exposes the API token; GitHub Actions writes only the generated JSON data into the repository.
 
