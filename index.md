@@ -24,7 +24,7 @@ layout: default
 
 ## Page views <span class="pageviews-total">(total: <span id="pageviews-total">--</span>)</span>
 
-<div class="visit-heatmap" data-src="{{ '/assets/data/pageviews.json' | relative_url }}" data-counter-src="https://chen6xin.goatcounter.com/counter/TOTAL.json" aria-label="Daily page views heatmap">
+<div class="visit-heatmap" data-src="{{ '/assets/data/pageviews.json' | relative_url }}" data-counter-src="https://chen6xin.goatcounter.com/counter/TOTAL.json" data-realtime-src="{{ site.realtime_counter_api }}" aria-label="Daily page views heatmap">
   <div class="visit-heatmap-scroll">
     <div class="visit-months" id="visit-months" aria-hidden="true"></div>
     <div class="visit-body">
@@ -41,7 +41,7 @@ layout: default
     </div>
   </div>
   <div class="visit-heatmap-footer">
-    <span class="visit-updated" id="pageviews-updated">Page view statistics are updated in real time by GoatCounter.</span>
+    <span class="visit-updated" id="pageviews-updated">Page view analytics are tracked by GoatCounter.</span>
     <div class="visit-heatmap-legend" aria-hidden="true">
       <span>Less</span>
       <span class="visit-day visit-level-1" title="1–5 views"></span>

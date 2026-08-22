@@ -104,6 +104,8 @@
       var future = d > range.today;
       cell.className = "visit-day visit-level-" + (future ? 0 : levelFor(count));
       if (future) cell.className += " is-future";
+      cell.setAttribute("data-date", key);
+      cell.setAttribute("data-count", String(count));
       cell.setAttribute("role", "img");
       cell.setAttribute("aria-label", future ? key + ": future date" : key + ": " + count + " page views");
       cell.title = future ? key + ": future date" : key + ": " + count + " page views";
@@ -111,10 +113,14 @@
     });
 
     if (updatedNode && data && data.updated_at) {
-      updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
+      updatedNode.textContent = "Page view analytics are tracked by GoatCounter.";
     }
     wrapper.classList.add("is-loaded");
-    return total;
+    return {
+      total: total,
+      todayKey: isoDate(range.today),
+      todayCount: daily[isoDate(range.today)] || 0
+    };
   }
 
   function renderEmpty() {
@@ -126,10 +132,28 @@
     return String(payload.count).trim();
   }
 
-  function updateTotalFromCounter(totalNode, counterSrc) {
-    if (!totalNode || !counterSrc || typeof fetch !== "function") return;
+  function parseCount(value) {
+    var count = parseInt(String(value == null ? "" : value).replace(/,/g, ""), 10);
+    return isNaN(count) ? null : count;
+  }
 
-    fetch(counterSrc, { cache: "no-cache" })
+  function updateDayCell(key, count) {
+    var grid = document.getElementById("visit-heatmap-grid");
+    if (!grid || !key) return;
+
+    var cell = grid.querySelector('[data-date="' + key + '"]');
+    if (!cell) return;
+
+    cell.className = "visit-day visit-level-" + levelFor(count);
+    cell.setAttribute("data-count", String(count));
+    cell.setAttribute("aria-label", key + ": " + count + " page views");
+    cell.title = key + ": " + count + " page views";
+  }
+
+  function updateTotalFromCounter(totalNode, counterSrc) {
+    if (!totalNode || !counterSrc || typeof fetch !== "function") return Promise.resolve();
+
+    return fetch(counterSrc, { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
@@ -143,28 +167,66 @@
       });
   }
 
+  function hitRealtimeCounter(totalNode, realtimeSrc, counterSrc, context) {
+    if (!totalNode || !realtimeSrc || typeof fetch !== "function") {
+      return updateTotalFromCounter(totalNode, counterSrc);
+    }
+
+    var body = {
+      date: context && context.todayKey,
+      base_total: context && context.total,
+      base_today_count: context && context.todayCount
+    };
+
+    return fetch(realtimeSrc, {
+      method: "POST",
+      cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (payload) {
+        var total = parseCount(payload && payload.total);
+        var todayCount = parseCount(payload && payload.today_count);
+        var today = String(payload && payload.today || "");
+        var updatedNode = document.getElementById("pageviews-updated");
+
+        if (total != null) totalNode.textContent = formatNumber(total);
+        if (today && todayCount != null) updateDayCell(today, todayCount);
+        if (updatedNode) updatedNode.textContent = "Total updates in real time via Cloudflare Workers; analytics by GoatCounter.";
+      })
+      .catch(function (err) {
+        if (window.console) console.warn("pageviews realtime counter:", err);
+        return updateTotalFromCounter(totalNode, counterSrc);
+      });
+  }
+
   function init() {
     var wrapper = document.querySelector(".visit-heatmap");
     if (!wrapper) return;
     var src = wrapper.getAttribute("data-src") || "/assets/data/pageviews.json";
     var counterSrc = wrapper.getAttribute("data-counter-src") || DEFAULT_COUNTER_SRC;
+    var realtimeSrc = (wrapper.getAttribute("data-realtime-src") || "").trim();
     var sep = src.indexOf("?") === -1 ? "?" : "&";
     var totalNode = document.getElementById("pageviews-total");
 
-    renderEmpty();
+    var emptyContext = renderEmpty();
     fetch(src + sep + "v=" + Date.now(), { cache: "no-cache" })
       .then(function (r) {
         if (!r.ok) throw new Error("HTTP " + r.status);
         return r.json();
       })
       .then(function (data) {
-        render(data);
-        updateTotalFromCounter(totalNode, counterSrc);
+        var context = render(data);
+        hitRealtimeCounter(totalNode, realtimeSrc, counterSrc, context);
       })
       .catch(function (err) {
-        updateTotalFromCounter(totalNode, counterSrc);
+        hitRealtimeCounter(totalNode, realtimeSrc, counterSrc, emptyContext);
         var updatedNode = document.getElementById("pageviews-updated");
-        if (updatedNode) updatedNode.textContent = "Page view statistics are updated in real time by GoatCounter.";
+        if (updatedNode) updatedNode.textContent = "Page view analytics are tracked by GoatCounter.";
         if (window.console) console.warn("pageviews.js:", err);
       });
   }

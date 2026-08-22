@@ -19,6 +19,7 @@ The website is built with [Jekyll](https://jekyllrb.com/) and deployed through G
 - `assets/js/pageviews.js` — renders the daily page-view heatmap from JSON data.
 - `assets/data/pageviews.json` — generated daily page-view data used by the homepage.
 - `.github/workflows/update-pageviews.yml` — GitHub Actions workflow that refreshes page-view data from GoatCounter.
+- `cloudflare/visit-counter/` — Cloudflare Workers + Durable Objects realtime total counter.
 - `assets/img/` — avatar, favicon image, and other site images.
 - `assets/pdf/` — CV or other PDF files if needed.
 
@@ -39,17 +40,38 @@ The paper title on the homepage becomes clickable when `URL` is provided.
 
 ## Page-view heatmap
 
-The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking. Daily historical data is stored in `assets/data/pageviews.json` and rendered as a contribution-graph-style heatmap. The total counter is loaded from GoatCounter's public `counter/TOTAL.json` endpoint so different devices show the same value.
+The homepage uses [GoatCounter](https://www.goatcounter.com/) for page-view tracking and keeps daily historical data in `assets/data/pageviews.json` for the contribution-graph-style heatmap. The displayed total can use a Cloudflare Workers + Durable Objects realtime counter so every page load increments a shared cross-device value immediately. If `realtime_counter_api` is empty, the page falls back to GoatCounter's public `counter/TOTAL.json` endpoint.
 
-To enable automatic updates:
+To enable GoatCounter data refreshes:
 
 1. Open the GoatCounter dashboard at <https://chen6xin.goatcounter.com/>.
 2. Create an API token from the account API settings.
 3. In this GitHub repository, add a repository secret named `GOATCOUNTER_TOKEN` with that API token.
-4. In GoatCounter site settings, enable “Allow adding visitor counts on your website” so the public counter endpoint can be read.
+4. In GoatCounter site settings, enable “Allow adding visitor counts on your website” so the fallback public counter endpoint can be read.
 5. Run the `Update page views` workflow manually once, or wait for the scheduled refresh.
 
-The public site never exposes the API token; GitHub Actions writes only the generated JSON data into the repository.
+To deploy the realtime counter:
+
+```sh
+cd cloudflare/visit-counter
+npx wrangler login
+npx wrangler deploy
+```
+
+After deployment, test it with your Worker URL:
+
+```sh
+curl https://<your-worker>.workers.dev/stats
+curl -X POST -H "Origin: https://chen6xin.github.io" https://<your-worker>.workers.dev/hit
+```
+
+After that, set `_config.yml`:
+
+```yml
+realtime_counter_api: "https://<your-worker>.workers.dev/hit"
+```
+
+Then commit and push the config change. The public site never exposes the GoatCounter API token; GitHub Actions writes only the generated JSON data into the repository. The Cloudflare counter is public and protected only by basic Origin/Referer checks, which are sufficient for casual personal-site counting but not strong authentication.
 
 ## Local preview
 

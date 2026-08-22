@@ -1,0 +1,20 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "chen6xin-visit-counter",
+  "main": "src/index.js",
+  "compatibility_date": "2026-08-22",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "VISIT_COUNTER",
+        "class_name": "VisitCounter"
+      }
+    ]
+  },
+  "exports": {
+    "VisitCounter": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    }
+  }
+}
