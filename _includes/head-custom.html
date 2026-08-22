@@ -6,6 +6,9 @@
 <!-- You can set your favicon here -->
 <!-- link rel="shortcut icon" type="image/x-icon" href="{{ '/favicon.ico' | relative_url }}" -->
 <link rel="icon" type="image/jpeg" href="{{ '/assets/img/favicon.JPG' | relative_url }}" />
+{% if site.logo %}
+<link rel="preload" as="image" href="{{ site.logo | relative_url }}" fetchpriority="high">
+{% endif %}
 <meta name="title" content="Researcher">
 
 <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"> -->
