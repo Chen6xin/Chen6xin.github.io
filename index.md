@@ -14,7 +14,7 @@ layout: default
 - **Name:** Xin Chen（陈鑫）
 - **Affiliation:** School of Computer and Information, Anhui Normal University
 - **Location:** Wuhu 241003, People’s Republic of China
-- **Interests:** complex networks, higher-order networks, information propagation, disease transmission
+- **Interests:** complex networks, higher-order networks, information spreading, epidemic spreading
 
 ## Current Focus
 
