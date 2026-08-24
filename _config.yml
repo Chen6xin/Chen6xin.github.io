@@ -5,4 +5,3 @@ show_downloads: false
 theme: jekyll-theme-minimal
 lang: en-US
 url: "https://chen6xin.github.io"
-realtime_counter_api: "https://chen6xin-visit-counter.chen6xin.workers.dev/hit"
