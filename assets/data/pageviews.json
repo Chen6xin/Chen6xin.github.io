@@ -1,13 +1,9 @@
 {
-  "updated_at": "2026-10-08T21:33:22Z",
+  "updated_at": "2026-10-09T08:02:13Z",
   "source": "GoatCounter",
   "site": "https://chen6xin.goatcounter.com",
   "total": 18,
   "days": [
-    {
-      "date": "2025-10-03",
-      "count": 0
-    },
     {
       "date": "2025-10-04",
       "count": 0
@@ -1490,6 +1486,10 @@
     },
     {
       "date": "2026-10-09",
+      "count": 0
+    },
+    {
+      "date": "2026-10-10",
       "count": 0
     }
   ]
